@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kas & Kelas — DISIPLIN</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+:root{--bg:#fbf6ed;--card:#fffdf9;--brown:#7b3f24;--brown2:#9a5b3b;--text:#3e3029;--muted:#8c7b70;--line:#eadfd1;--green:#e8f3df;--redbg:#fff0ef;--greenText:#4f7d40;--red:#c34e43;--shadow:0 8px 24px rgba(92,57,34,.08)}
+*{box-sizing:border-box}body{margin:0;background:#eee7dc;color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}.app{max-width:430px;min-height:100vh;margin:auto;background:var(--bg);padding-bottom:85px}.page{display:none}.page.active{display:block}header{padding:24px 20px 14px}.eyebrow{font-size:12px;color:var(--muted)}h1{font-size:23px;margin:4px 0}.sub{font-size:12px;color:var(--muted)}
+.hero{margin:8px 16px 14px;padding:20px;border-radius:22px;background:linear-gradient(135deg,#fff0dc,#f8dfc8);box-shadow:var(--shadow)}.hero h2{margin:0 0 5px;font-size:21px}.hero p{margin:0;color:#765d4d;font-size:12px}
+.balance{margin:14px 16px;background:var(--brown);color:white;border-radius:22px;padding:20px}.balance small{opacity:.75}.balance h2{font-size:28px;margin:7px 0}.stats{display:grid;grid-template-columns:1fr 1fr;background:#fffaf3;color:var(--text);border-radius:14px;overflow:hidden;margin-top:15px}.stat{text-align:center;padding:11px}.stat+ .stat{border-left:1px solid var(--line)}.stat small{color:var(--muted);display:block;font-size:10px}.stat b{font-size:13px}.in{color:var(--greenText)}.out{color:var(--red)}
+.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px}.q{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 6px;text-align:center;font-size:11px;font-weight:700;box-shadow:var(--shadow);cursor:pointer}.q span{display:block;font-size:24px;margin-bottom:6px}
+.section{margin:18px 16px}.title{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.title b{font-size:15px}.title span{font-size:11px;color:var(--brown2);font-weight:700;cursor:pointer}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow)}.notice{display:flex;gap:10px}.notice .ico{font-size:25px}.notice p{margin:5px 0 0;color:var(--muted);font-size:11px;line-height:1.5}
+.month{display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px}.select{padding:9px;border:1px solid var(--line);border-radius:10px;color:var(--brown);font-weight:700;background:transparent}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.mini{padding:15px;border-radius:17px;border:1px solid var(--line);box-shadow:var(--shadow)}.mini small{display:block;font-size:10px;color:var(--muted);margin-bottom:6px}.mini b{font-size:19px}.green{background:var(--green)}.pink{background:var(--redbg)}
+.bar{height:9px;background:#eee5d8;border-radius:99px;overflow:hidden;margin:12px 0 7px}.fill{height:100%;background:var(--brown);border-radius:99px;transition:width .3s}
+.list{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:4px 15px;box-shadow:var(--shadow)}.item{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid var(--line)}.item:last-child{border-bottom:0}.item small{display:block;color:var(--muted);font-size:10px;margin-top:3px}.badge{padding:6px 9px;border-radius:99px;font-size:10px;font-weight:800}.paid{background:var(--green);color:var(--greenText)}.unpaid{background:var(--redbg);color:var(--red)}
+.info{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px;box-shadow:var(--shadow);margin-bottom:10px}.infoTop{display:flex;gap:10px}.info h3{margin:0;font-size:14px}.info p{font-size:11px;color:var(--muted);line-height:1.5;margin:7px 0}.share{border:0;background:#f0e4d6;color:var(--brown);font-weight:800;border-radius:10px;padding:9px 11px;font-size:11px;cursor:pointer}
+.adminHero{background:var(--brown);color:white;border-radius:22px;padding:20px;margin:8px 16px 14px}.adminHero h2{margin:0 0 5px}.adminHero p{margin:0;opacity:.8;font-size:11px}
+.adminGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px}.adminBtn{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:16px;text-align:left;box-shadow:var(--shadow);cursor:pointer}.adminBtn span{font-size:24px}.adminBtn b{display:block;margin-top:8px;font-size:12px}.adminBtn small{color:var(--muted);font-size:10px}
+.form{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow)}label{display:block;font-size:11px;font-weight:700;margin:10px 0 5px}input,select,textarea{width:100%;border:1px solid var(--line);background:#fffaf4;border-radius:11px;padding:11px;font:inherit;font-size:12px;color:var(--text)}textarea{min-height:80px;resize:vertical}.primary{width:100%;border:0;background:var(--brown);color:white;border-radius:12px;padding:12px;margin-top:12px;font-weight:800;cursor:pointer}.secondary{width:100%;border:1px solid var(--brown);background:transparent;color:var(--brown);border-radius:12px;padding:10px;margin-top:8px;font-weight:700;cursor:pointer}
+.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(430px,100%);background:rgba(255,253,249,.96);backdrop-filter:blur(12px);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:9px 7px calc(9px + env(safe-area-inset-bottom));z-index:5}.nav{text-align:center;font-size:9px;color:var(--muted);font-weight:700;cursor:pointer}.nav span{display:block;font-size:19px;margin-bottom:2px}.nav.active{color:var(--brown)}
+.toast{position:fixed;bottom:85px;left:50%;transform:translateX(-50%) translateY(15px);background:#3e3029;color:white;padding:10px 14px;border-radius:12px;font-size:11px;opacity:0;pointer-events:none;transition:.25s;z-index:10}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(min-width:600px){.app{box-shadow:0 0 40px rgba(0,0,0,.12)}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <section id="home" class="page active">
+    <header><div class="eyebrow">Selamat datang di 👋</div><h1>Kas & Kelas — DISIPLIN</h1><div class="sub">Ruang informasi dan kas kelas kita 🤎</div></header>
+    <div class="hero"><h2>🌿 Kelas DISIPLIN</h2><p>Tahun Ajaran 2026/2027 · TK B</p></div>
+    <section class="balance"><small>💰 Saldo Kas Kelas</small><h2 id="homeBalance">Rp 0</h2><small id="lastUpdated">Menghubungkan database...</small><div class="stats"><div class="stat"><small>Pemasukan</small><b class="in" id="homeIn">Rp 0</b></div><div class="stat"><small>Pengeluaran</small><b class="out" id="homeOut">Rp 0</b></div></div></section>
+    <div class="quick"><div class="q" onclick="navTo('kas')"><span>💰</span>Kas & Iuran</div><div class="q" onclick="navTo('cek-bayar')"><span>🔍</span>Cek Saya</div><div class="q" onclick="navTo('info')"><span>📢</span>Info Kelas</div><div class="q" onclick="navTo('calendar')"><span>📅</span>Agenda</div><div class="q" onclick="navTo('kontak')"><span>📞</span>Korlas</div><div class="q" onclick="navTo('admin')"><span>🔐</span>Admin</div></div>
+    <section class="section"><div class="title"><b>Pengumuman Terbaru</b><span onclick="navTo('info')">Lihat Semua →</span></div><div id="homeAnnounce"><div class="card notice"><div class="ico">📌</div><div><b>Belum Ada Pengumuman</b><p>Pengumuman terbaru akan muncul di sini.</p></div></div></div></section>
+  </section>
+
+  <section id="kas" class="page">
+    <header><h1>💰 Kas & Iuran</h1><div class="sub">Transparan, rapi, dan menjaga privasi</div></header>
+    <div class="hero"><small>💰 Target Iuran Bulanan</small><h2>Rp 20.000</h2><p>/ bulan per anak</p></div>
+    <section class="section"><div class="month"><b>📅 Pilih Bulan</b><select id="kasMonthFilter" class="select" onchange="loadKasStat()"></select></div><div class="grid"><div class="mini green"><small>Sudah Membayar</small><b id="countPaid">0 Orang</b></div><div class="mini pink"><small>Belum Membayar</small><b id="countUnpaid">0 Orang</b></div></div></section>
+    <section class="section"><div class="title"><b>Progress Pembayaran</b><span id="totalStudentsCount">0 Anak</span></div><div class="card"><div class="bar"><div id="progressBar" class="fill" style="width:0%"></div></div><div style="font-size:10px;color:var(--muted)"><span id="txtPaid">0</span> sudah bayar · <b style="color:var(--red)"><span id="txtUnpaid">0</span> belum bayar</b></div></div></section>
+    <section class="section"><div class="card notice"><div class="ico">🔒</div><div><b>Privasi Terjaga</b><p>Nama murid yang belum bayar tidak dipublikasikan secara umum. Gunakan menu <b>Cek Saya</b> dengan Kode Unik anak Anda.</p></div></div></section>
+  </section>
+
+  <section id="cek-bayar" class="page">
+    <header><h1>🔍 Cek Pembayaran Saya</h1><div class="sub">Lihat status iuran tanpa perlu login</div></header>
+    <section class="section"><div class="form"><label>Masukkan Kode Unik Anak</label><input type="text" id="inputStudentCode" placeholder="Contoh: DIS-001" style="text-transform:uppercase;"><button class="primary" onclick="searchStudentStatus()">Cek Status Pembayaran</button></div></section>
+    <section class="section" id="studentResult" style="display:none;"><div class="card" style="margin-bottom:12px;background:#f0e4d6;"><b id="resStudentName" style="font-size:16px;">-</b><div style="font-size:11px;color:var(--muted);" id="resStudentCode">-</div></div><div class="title"><b>Riwayat Pembayaran</b></div><div class="list" id="resPaymentHistory"></div></section>
+  </section>
+
+  <section id="calendar" class="page">
+    <header><h1>📅 Agenda & Kegiatan</h1><div class="sub">Jadwal kegiatan Kelas DISIPLIN</div></header>
+    <section class="section"><div class="list" id="agendaList"><div class="item">Belum ada agenda kegiatan.</div></div></section>
+  </section>
+
+  <section id="info" class="page">
+    <header><h1>📢 Info Kelas</h1><div class="sub">Informasi resmi dari Korlas</div></header>
+    <section class="section" id="infoList"><div class="card notice"><p>Belum ada info terbaru.</p></div></section>
+  </section>
+
+  <section id="kontak" class="page">
+    <header><h1>📞 Pengurus Kelas</h1><div class="sub">Kontak Korlas & Bendahara</div></header>
+    <section class="section"><div class="card" style="margin-bottom:10px;"><b>Ketua Korlas: Mama Malik</b><p style="margin:5px 0;font-size:11px;color:var(--muted);">WhatsApp: 081234567890</p><button class="share" onclick="window.open('https://wa.me/6281234567890','_blank')">💬 Chat WA</button></div></section>
+  </section>
+
+  <section id="admin" class="page">
+    <header><h1>🔐 Admin Kelas</h1><div class="sub">Khusus Korlas & Bendahara</div></header>
+    <div id="adminLoginForm" class="section"><div class="form"><label>Email Admin</label><input type="email" id="loginEmail" placeholder="admin@sekolah.com"><label>Password</label><input type="password" id="loginPassword" placeholder="••••••••"><button class="primary" onclick="handleLogin()">Login Admin</button></div></div>
+    <div id="adminDashboard" style="display:none;"><div class="adminHero"><h2 id="adminWelcome">Halo Admin</h2><p>Akses kelola kas & data murid</p><button class="secondary" style="color:white;border-color:white;margin-top:10px;" onclick="handleLogout()">Keluar / Logout</button></div><div class="adminGrid"><button class="adminBtn" onclick="navTo('adminKas')"><span>💰</span><b>Kelola Kas</b><small>Catat iuran & transaksi</small></button><button class="adminBtn" onclick="navTo('adminMurid')"><span>👨‍👩‍👧</span><b>Data Murid</b><small>Kelola kode unik murid</small></button><button class="adminBtn" onclick="navTo('adminInfo')"><span>📢</span><b>Pengumuman</b><small>Buat & Share WA</small></button><button class="adminBtn" onclick="exportKasExcel()"><span>📊</span><b>Export Kas</b><small>Download Excel</small></button></div></div>
+  </section>
+
+  <section id="adminKas" class="page">
+    <header><h1>💰 Kelola Kas</h1><div class="sub">Catat transaksi kas & iuran</div></header>
+    <section class="section"><div class="form"><b>1. Catat Iuran Murid</b><label>Pilih Murid</label><select id="admFeeStudent"></select><label>Bulan Iuran</label><input type="month" id="admFeeMonth"><label>Nominal (Rp)</label><input type="number" id="admFeeAmount" value="20000"><button class="primary" onclick="saveStudentFee()">Simpan Pembayaran Iuran</button></div></section>
+    <section class="section"><div class="form"><b>2. Catat Transaksi Umum (Kas)</b><label>Jenis Transaksi</label><select id="admTxType"><option value="in">Pemasukan Lainnya</option><option value="out">Pengeluaran</option></select><label>Keterangan</label><input type="text" id="admTxDesc" placeholder="Contoh: Beli Kertas Origami"><label>Nominal (Rp)</label><input type="number" id="admTxAmount" placeholder="15000"><button class="primary" onclick="saveGeneralTx()">Simpan Transaksi Kas</button></div></section>
+  </section>
+
+  <section id="adminMurid" class="page">
+    <header><h1>👨‍👩‍👧 Data Murid</h1><div class="sub">Kelola kode unik & nama murid</div></header>
+    <section class="section"><div class="form"><b>Tambah Murid Baru</b><label>Kode Unik</label><input type="text" id="admNewCode" placeholder="DIS-001" style="text-transform:uppercase;"><label>Nama Anak</label><input type="text" id="admNewName" placeholder="Ananda Malik"><button class="primary" onclick="addStudent()">Tambah Murid</button></div></section>
+    <section class="section"><div class="title"><b>Daftar Murid</b></div><div class="list" id="admStudentList"></div></section>
+  </section>
+
+  <section id="adminInfo" class="page">
+    <header><h1>📢 Buat Pengumuman</h1><div class="sub">Bagikan ke aplikasi & WhatsApp</div></header>
+    <section class="section"><div class="form"><label>Judul Pengumuman</label><input id="infoTitle" placeholder="Contoh: Pengingat Besok"><label>Isi Pengumuman</label><textarea id="infoBody" placeholder="Tulis pengumuman..."></textarea><button class="primary" onclick="publishAnnouncement()">Simpan & Share WA</button></div></section>
+  </section>
+
+  <nav class="bottom">
+    <div class="nav active" data-page="home" onclick="navTo('home')"><span>⌂</span>Beranda</div>
+    <div class="nav" data-page="kas" onclick="navTo('kas')"><span>💰</span>Kas</div>
+    <div class="nav" data-page="cek-bayar" onclick="navTo('cek-bayar')"><span>🔍</span>Cek Saya</div>
+    <div class="nav" data-page="info" onclick="navTo('info')"><span>📢</span>Info</div>
+    <div class="nav" data-page="admin" onclick="navTo('admin')"><span>🔐</span>Admin</div>
+  </nav>
+
+  <div id="toast" class="toast"></div>
+</div>
+
+<script>
+// =========================================================================
+// KUNCI DATABASE SUPABASE KAMU
+// =========================================================================
+const SUPABASE_URL = "https://fbfkshoodkuygzllsevx.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_lk55DdlR28z3teCZsPhv5A_vAevt7-2";
+
+const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+document.addEventListener('DOMContentLoaded', () => {
+  initMonthPicker();
+  loadPublicHomeData();
+  checkAdminSession();
+});
+
+function toast(msg){let t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
+
+window.navTo = function(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  let t = document.getElementById(id); if(t) t.classList.add('active');
+  document.querySelectorAll('.nav').forEach(n=>n.classList.toggle('active', n.dataset.page===id || (id.startsWith('admin')&&n.dataset.page==='admin')));
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(id==='kas') loadKasStat();
+  if(id==='info') loadAnnouncements();
+  if(id==='adminMurid') loadAdminStudents();
+}
+
+function initMonthPicker(){
+  let s = document.getElementById('kasMonthFilter'); s.innerHTML = '';
+  let now = new Date();
+  for(let i=0; i<6; i++){
+    let d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+    let val = d.toISOString().slice(0,7);
+    let label = d.toLocaleDateString('id-ID', {month:'long', year:'numeric'});
+    s.innerHTML += `<option value="${val}">${label}</option>`;
+  }
+}
+
+async function loadPublicHomeData(){
+  let {data: txs} = await _supabase.from('transactions').select('type, amount');
+  let tin = 0, tout = 0;
+  if(txs){ txs.forEach(t=>{ if(t.type==='in') tin+=Number(t.amount); if(t.type==='out') tout+=Number(t.amount); }); }
+  document.getElementById('homeBalance').textContent = `Rp ${(tin - tout).toLocaleString('id-ID')}`;
+  document.getElementById('homeIn').textContent = `Rp ${tin.toLocaleString('id-ID')}`;
+  document.getElementById('homeOut').textContent = `Rp ${tout.toLocaleString('id-ID')}`;
+
+  let {data: info} = await _supabase.from('announcements').select('*').order('created_at', {ascending:false}).limit(1);
+  if(info && info.length>0){
+    document.getElementById('homeAnnounce').innerHTML = `<div class="card notice"><div class="ico">📌</div><div><b>${info[0].title}</b><p>${info[0].body}</p></div></div>`;
+  }
+}
+
+async function loadKasStat(){
+  let selectedMonth = document.getElementById('kasMonthFilter').value;
+  let {data: st} = await _supabase.from('students').select('id');
+  let total = st ? st.length : 0;
+  let {data: py} = await _supabase.from('payments').select('student_id').eq('month', selectedMonth);
+  let paid = py ? py.length : 0;
+  let unpaid = Math.max(0, total - paid);
+
+  document.getElementById('countPaid').textContent = `${paid} Orang`;
+  document.getElementById('countUnpaid').textContent = `${unpaid} Orang`;
+  document.getElementById('totalStudentsCount').textContent = `${total} Anak`;
+  document.getElementById('txtPaid').textContent = paid;
+  document.getElementById('txtUnpaid').textContent = unpaid;
+  document.getElementById('progressBar').style.width = `${total > 0 ? (paid/total)*100 : 0}%`;
+}
+
+async function searchStudentStatus(){
+  let code = document.getElementById('inputStudentCode').value.trim().toUpperCase();
+  if(!code) return toast("Masukkan Kode Unik anak!");
+  let {data: st} = await _supabase.from('students').select('*').eq('unique_code', code).single();
+  if(!st) return toast("Kode Unik tidak ditemukan!");
+
+  document.getElementById('studentResult').style.display = 'block';
+  document.getElementById('resStudentName').textContent = st.name;
+  document.getElementById('resStudentCode').textContent = `Kode Unik: ${st.unique_code}`;
+
+  let {data: py} = await _supabase.from('payments').select('*').eq('student_id', st.id).order('month', {ascending:false});
+  let c = document.getElementById('resPaymentHistory'); c.innerHTML = '';
+  if(!py || py.length===0){ c.innerHTML = '<div class="item">Belum ada riwayat iuran.</div>'; }
+  else {
+    py.forEach(p=>{
+      c.innerHTML += `<div class="item"><div><b>Iuran ${p.month}</b><small>Dibayar: ${new Date(p.created_at).toLocaleDateString('id-ID')}</small></div><span class="badge paid">Rp ${Number(p.amount).toLocaleString('id-ID')} - LUNAS</span></div>`;
+    });
+  }
+}
+
+async function loadAnnouncements(){
+  let {data} = await _supabase.from('announcements').select('*').order('created_at', {ascending:false});
+  let c = document.getElementById('infoList'); c.innerHTML = '';
+  if(data){
+    data.forEach(item => {
+      let shareTxt = `📢 *INFO KELAS DISIPLIN*\n\n*${item.title}*\n${item.body}`;
+      c.innerHTML += `<div class="info"><div class="infoTop"><div style="font-size:25px">📌</div><div><h3>${item.title}</h3><p>${item.body}</p><button class="share" onclick="window.open('https://wa.me/?text=${encodeURIComponent(shareTxt)}','_blank')">📲 Bagikan ke WhatsApp</button></div></div></div>`;
+    });
+  }
+}
+
+async function checkAdminSession(){
+  let {data:{session}} = await _supabase.auth.getSession();
+  if(session){
+    document.getElementById('adminLoginForm').style.display = 'none';
+    document.getElementById('adminDashboard').style.display = 'block';
+    document.getElementById('adminWelcome').textContent = `Halo Admin`;
+    populateStudentDropdown();
+  } else {
+    document.getElementById('adminLoginForm').style.display = 'block';
+    document.getElementById('adminDashboard').style.display = 'none';
+  }
+}
+
+async function handleLogin(){
+  let email = document.getElementById('loginEmail').value;
+  let password = document.getElementById('loginPassword').value;
+  let {error} = await _supabase.auth.signInWithPassword({email, password});
+  if(error) toast(error.message);
+  else { toast("Login Berhasil!"); checkAdminSession(); }
+}
+
+async function handleLogout(){ await _supabase.auth.signOut(); toast("Logout"); checkAdminSession(); }
+
+async function populateStudentDropdown(){
+  let {data} = await _supabase.from('students').select('*').order('name');
+  let s = document.getElementById('admFeeStudent'); s.innerHTML = '';
+  if(data){ data.forEach(st => { s.innerHTML += `<option value="${st.id}">${st.name} (${st.unique_code})</option>`; }); }
+}
+
+async function saveStudentFee(){
+  let student_id = document.getElementById('admFeeStudent').value;
+  let month = document.getElementById('admFeeMonth').value;
+  let amount = document.getElementById('admFeeAmount').value;
+  if(!month) return toast("Pilih bulan!");
+  let {error} = await _supabase.from('payments').insert([{student_id, month, amount}]);
+  if(error) toast(error.message);
+  else {
+    await _supabase.from('transactions').insert([{type:'in', description:`Iuran ${month}`, amount}]);
+    toast("Iuran Tersimpan!");
+  }
+}
+
+async function saveGeneralTx(){
+  let type = document.getElementById('admTxType').value;
+  let description = document.getElementById('admTxDesc').value;
+  let amount = document.getElementById('admTxAmount').value;
+  if(!description || !amount) return toast("Lengkapi form!");
+  let {error} = await _supabase.from('transactions').insert([{type, description, amount}]);
+  if(error) toast(error.message);
+  else toast("Transaksi Tersimpan!");
+}
+
+async function loadAdminStudents(){
+  let {data} = await _supabase.from('students').select('*').order('name');
+  let c = document.getElementById('admStudentList'); c.innerHTML = '';
+  if(data){ data.forEach(s => { c.innerHTML += `<div class="item"><div><b>${s.name}</b><small>Kode: ${s.unique_code}</small></div></div>`; }); }
+}
+
+async function addStudent(){
+  let unique_code = document.getElementById('admNewCode').value.trim().toUpperCase();
+  let name = document.getElementById('admNewName').value.trim();
+  if(!unique_code || !name) return toast("Lengkapi data!");
+  let {error} = await _supabase.from('students').insert([{unique_code, name}]);
+  if(error) toast(error.message);
+  else { toast("Murid Ditambahkan!"); loadAdminStudents(); populateStudentDropdown(); }
+}
+
+async function publishAnnouncement(){
+  let title = document.getElementById('infoTitle').value;
+  let body = document.getElementById('infoBody').value;
+  if(!title || !body) return toast("Isi pengumuman!");
+  let {error} = await _supabase.from('announcements').insert([{title, body}]);
+  if(error) toast(error.message);
+  else {
+    toast("Dipublikasikan!");
+    let t = `📢 *INFO KELAS DISIPLIN*\n\n*${title}*\n${body}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(t)}`, '_blank');
+  }
+}
+
+async function exportKasExcel(){
+  let {data} = await _supabase.from('transactions').select('*');
+  if(!data) return toast("Tidak ada data!");
+  let ws = XLSX.utils.json_to_sheet(data);
+  let wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Kas");
+  XLSX.writeFile(wb, "Kas_Kelas_Disiplin.xlsx");
+}
+</script>
+</body>
+</html>

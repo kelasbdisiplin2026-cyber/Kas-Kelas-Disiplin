@@ -23,7 +23,7 @@
         <h1 class="text-lg font-bold text-amber-900 flex items-center gap-2">
           <span>🌿</span> Kelas DISIPLIN
         </h1>
-        <p class="text-xs text-gray-500">Tahun Ajaran 2026/2027 · TK B</p>
+        <p class="text-xs text-gray-500">Ruang informasi dan kas kelas kita 🤎</p>
       </div>
     </div>
   </header>
@@ -55,35 +55,11 @@
         </div>
       </div>
 
-      <!-- Target Iuran Section -->
-      <div class="grid grid-cols-2 gap-3">
-        <div class="bg-amber-50/80 border border-amber-200/60 rounded-2xl p-4">
-          <div class="text-xs font-semibold text-amber-800 flex items-center gap-1 mb-1">
-            <span>💰</span> Target Kas
-          </div>
-          <div class="text-lg font-bold text-amber-950">Rp 20.000</div>
-          <div class="text-[10px] text-amber-700/80">/ bulan per anak</div>
-        </div>
-
-        <div class="bg-emerald-50/80 border border-emerald-200/60 rounded-2xl p-4">
-          <div class="text-xs font-semibold text-emerald-800 flex items-center gap-1 mb-1">
-            <span>🧹</span> Kebersihan
-          </div>
-          <div class="text-lg font-bold text-emerald-950">Rp 100.000</div>
-          <div class="text-[10px] text-emerald-700/80">/ bulan per anak</div>
-        </div>
-      </div>
-
-      <!-- Quick Menu Grid -->
+      <!-- Quick Menu Grid 6 Tombol (Korlas Diganti Iuran Kebersihan) -->
       <div class="grid grid-cols-3 gap-3">
         <button onclick="switchTab('kas')" class="bg-white p-3.5 rounded-xl border border-gray-100 shadow-sm text-center hover:bg-amber-50/50">
           <div class="text-2xl mb-1">💰</div>
-          <div class="text-xs font-semibold text-gray-700">Kas Kelas</div>
-        </button>
-
-        <button onclick="switchTab('kebersihan')" class="bg-white p-3.5 rounded-xl border border-gray-100 shadow-sm text-center hover:bg-amber-50/50">
-          <div class="text-2xl mb-1">🧹</div>
-          <div class="text-xs font-semibold text-gray-700">Kebersihan</div>
+          <div class="text-xs font-semibold text-gray-700">Kas & Iuran</div>
         </button>
 
         <button onclick="switchTab('cek')" class="bg-white p-3.5 rounded-xl border border-gray-100 shadow-sm text-center hover:bg-amber-50/50">
@@ -96,93 +72,179 @@
           <div class="text-xs font-semibold text-gray-700">Info Kelas</div>
         </button>
 
-        <button onclick="switchTab('admin')" class="bg-white p-3.5 rounded-xl border border-gray-100 shadow-sm text-center hover:bg-amber-50/50 col-span-2">
-          <div class="text-2xl mb-1">🔐</div>
-          <div class="text-xs font-semibold text-gray-700">Menu Admin</div>
+        <button onclick="switchTab('agenda')" class="bg-white p-3.5 rounded-xl border border-gray-100 shadow-sm text-center hover:bg-amber-50/50">
+          <div class="text-2xl mb-1">📅</div>
+          <div class="text-xs font-semibold text-gray-700">Agenda</div>
         </button>
+
+        <!-- FITUR BARU: Iuran Kebersihan Menggantikan Korlas -->
+        <button onclick="switchTab('kebersihan')" class="bg-white p-3.5 rounded-xl border border-gray-100 shadow-sm text-center hover:bg-amber-50/50">
+          <div class="text-2xl mb-1">🧹</div>
+          <div class="text-xs font-semibold text-gray-700">Kebersihan</div>
+        </button>
+
+        <button onclick="switchTab('admin')" class="bg-white p-3.5 rounded-xl border border-gray-100 shadow-sm text-center hover:bg-amber-50/50">
+          <div class="text-2xl mb-1">🔐</div>
+          <div class="text-xs font-semibold text-gray-700">Admin</div>
+        </button>
+      </div>
+
+      <!-- Pengumuman Card -->
+      <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-sm font-bold text-gray-800 flex items-center gap-1.5">
+            📌 Pengumuman Terbaru
+          </h2>
+        </div>
+        <div id="announcement-content" class="text-xs text-gray-600 bg-amber-50/60 p-3 rounded-xl border border-amber-100">
+          Belum ada pengumuman baru.
+        </div>
       </div>
     </div>
 
-    <!-- TAB 2: KAS KELAS (Rp 20.000) -->
+    <!-- TAB 2: KAS & IURAN (Rp 20.000) -->
     <div id="tab-kas" class="tab-content space-y-4">
-      <h2 class="font-bold text-lg text-amber-900">💰 Progress Kas Kelas (Rp 20.000/bln)</h2>
-      <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
-        <p class="text-xs text-gray-500 mb-3">Status pembayaran Kas oleh seluruh murid.</p>
-        <div id="list-kas-status" class="space-y-2 text-xs">
-          <!-- Data Kas Muncul di Sini -->
+      <div class="bg-amber-100/50 border border-amber-200/60 rounded-2xl p-4">
+        <div class="text-xs font-semibold text-amber-800 mb-1">💰 Target Iuran Kas Bulanan</div>
+        <div class="text-2xl font-bold text-amber-950">Rp 20.000</div>
+        <div class="text-xs text-amber-700/80">/ bulan per anak</div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm space-y-3">
+        <h3 class="font-bold text-sm text-gray-800">Checklist Pembayaran Kas</h3>
+        <div id="checklist-kas-list" class="space-y-2 text-xs">
+          <!-- Item checklist Kas muncul di sini -->
+          <div class="p-2.5 bg-gray-50 rounded-xl flex justify-between items-center border">
+            <span>Ananda Malik</span>
+            <span class="bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-md text-[10px]">LUNAS</span>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- TAB 3: IURAN KEBERSIHAN (Rp 100.000) -->
     <div id="tab-kebersihan" class="tab-content space-y-4">
-      <h2 class="font-bold text-lg text-emerald-900">🧹 Progress Iuran Kebersihan (Rp 100.000/bln)</h2>
-      <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
-        <p class="text-xs text-gray-500 mb-3">Status pembayaran Iuran Kebersihan oleh seluruh murid.</p>
-        <div id="list-kebersihan-status" class="space-y-2 text-xs">
-          <!-- Data Kebersihan Muncul di Sini -->
+      <div class="bg-emerald-100/50 border border-emerald-200/60 rounded-2xl p-4">
+        <div class="text-xs font-semibold text-emerald-800 mb-1">🧹 Target Iuran Kebersihan</div>
+        <div class="text-2xl font-bold text-emerald-950">Rp 100.000</div>
+        <div class="text-xs text-emerald-700/80">/ bulan per anak</div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm space-y-3">
+        <h3 class="font-bold text-sm text-gray-800">Checklist Iuran Kebersihan</h3>
+        <div id="checklist-kebersihan-list" class="space-y-2 text-xs">
+          <!-- Item checklist Kebersihan muncul di sini -->
+          <div class="p-2.5 bg-gray-50 rounded-xl flex justify-between items-center border">
+            <span>Ananda Malik</span>
+            <span class="bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded-md text-[10px]">BELUM</span>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- TAB 4: CEK SAYA -->
     <div id="tab-cek" class="tab-content space-y-4">
-      <h2 class="font-bold text-lg text-amber-900">🔍 Cek Status Pembayaran Saya</h2>
+      <h2 class="font-bold text-base text-amber-900">🔍 Cek Status Pembayaran Saya</h2>
       <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm space-y-3">
         <div>
           <label class="block text-xs font-semibold text-gray-600 mb-1">Kode Unik Anak</label>
-          <input type="text" id="input-kode-unik" placeholder="Masukkan Kode Unik (contoh: DIS-001)" class="w-full border rounded-xl p-2.5 text-xs focus:ring-2 focus:ring-amber-500 outline-none">
+          <input type="text" id="input-kode-unik" placeholder="Masukkan Kode Unik (misal: DIS-001)" class="w-full border rounded-xl p-2.5 text-xs focus:ring-2 focus:ring-amber-500 outline-none">
         </div>
-        <button onclick="cekStatusMandiri()" class="w-full bg-amber-800 text-white font-semibold py-2.5 rounded-xl text-xs">Cek Status</button>
+        <button onclick="cekStatusMandiri()" class="w-full bg-amber-800 text-white font-semibold py-2.5 rounded-xl text-xs">Cek Status Pembayaran</button>
       </div>
       <div id="hasil-cek-mandiri" class="space-y-3"></div>
     </div>
 
     <!-- TAB 5: INFO KELAS -->
     <div id="tab-info" class="tab-content space-y-4">
-      <h2 class="font-bold text-lg text-amber-900">📢 Informasi Kelas</h2>
+      <h2 class="font-bold text-base text-amber-900">📢 Informasi Kelas</h2>
       <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm text-xs text-gray-600">
         Belum ada informasi terbaru.
       </div>
     </div>
 
-    <!-- TAB 6: ADMIN -->
-    <div id="tab-admin" class="tab-content space-y-4">
-      <h2 class="font-bold text-lg text-amber-900">🔐 Panel Kelola Admin</h2>
-      
-      <!-- Input Catatan Pembayaran Baru -->
-      <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm space-y-3">
-        <h3 class="font-semibold text-xs text-gray-700">Catat Pembayaran Murid</h3>
-        
-        <div>
-          <label class="block text-[10px] text-gray-500">Pilih Jenis Iuran</label>
-          <select id="admin-jenis-iuran" class="w-full border rounded-xl p-2 text-xs">
-            <option value="kas">💰 Kas Kelas (Rp 20.000)</option>
-            <option value="kebersihan">🧹 Iuran Kebersihan (Rp 100.000)</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block text-[10px] text-gray-500">Nama Murid</label>
-          <input type="text" id="admin-nama-murid" placeholder="Nama Murid" class="w-full border rounded-xl p-2 text-xs">
-        </div>
-
-        <div>
-          <label class="block text-[10px] text-gray-500">Bulan</label>
-          <select id="admin-bulan" class="w-full border rounded-xl p-2 text-xs">
-            <option value="Juli 2026">Juli 2026</option>
-            <option value="Agustus 2026">Agustus 2026</option>
-            <option value="September 2026">September 2026</option>
-            <option value="Oktober 2026">Oktober 2026</option>
-            <option value="November 2026">November 2026</option>
-            <option value="Desember 2026">Desember 2026</option>
-          </select>
-        </div>
-
-        <button onclick="simpanPembayaranAdmin()" class="w-full bg-emerald-700 text-white font-semibold py-2 rounded-xl text-xs">
-          ✅ Tandai LUNAS
-        </button>
+    <!-- TAB 6: AGENDA -->
+    <div id="tab-agenda" class="tab-content space-y-4">
+      <h2 class="font-bold text-base text-amber-900">📅 Agenda Kelas</h2>
+      <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm text-xs text-gray-600">
+        Belum ada agenda terdekat.
       </div>
+    </div>
+
+    <!-- TAB 7: ADMIN (Fitur Log In & Log Out) -->
+    <div id="tab-admin" class="tab-content space-y-4">
+      
+      <!-- KONDISI 1: JIKA BELUM LOGIN (FORM LOGIN) -->
+      <div id="admin-login-box" class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm space-y-4">
+        <div class="text-center">
+          <div class="text-3xl mb-1">🔐</div>
+          <h2 class="font-bold text-base text-amber-900">Login Admin Korlas</h2>
+          <p class="text-xs text-gray-500">Masukkan email & password admin Anda</p>
+        </div>
+
+        <div class="space-y-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Email</label>
+            <input type="email" id="login-email" placeholder="admin@email.com" class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-amber-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Password</label>
+            <input type="password" id="login-password" placeholder="••••••••" class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-amber-500">
+          </div>
+          <button onclick="handleLogin()" class="w-full bg-amber-800 text-white font-semibold py-2.5 rounded-xl text-xs hover:bg-amber-900 transition">
+            Masuk Admin
+          </button>
+        </div>
+      </div>
+
+      <!-- KONDISI 2: JIKA SUDAH LOGIN (DASHBOARD ADMIN + LOGOUT) -->
+      <div id="admin-dashboard-box" class="hidden space-y-4">
+        <div class="bg-amber-900 text-white rounded-2xl p-4 flex justify-between items-center shadow-sm">
+          <div>
+            <div class="text-xs text-amber-200">Status Access:</div>
+            <div class="font-bold text-sm" id="admin-user-email">Admin Korlas</div>
+          </div>
+          <!-- Tombol Log Out -->
+          <button onclick="handleLogout()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs px-3 py-1.5 rounded-xl font-medium transition flex items-center gap-1">
+            <span>🚪</span> Log Out
+          </button>
+        </div>
+
+        <!-- Form Pencatatan Iuran Kas & Kebersihan -->
+        <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm space-y-3">
+          <h3 class="font-bold text-xs text-gray-800 border-b pb-2">Kelola Pembayaran Iuran</h3>
+          
+          <div>
+            <label class="block text-[10px] text-gray-500 mb-1">Jenis Iuran</label>
+            <select id="admin-jenis-iuran" class="w-full border rounded-xl p-2 text-xs outline-none">
+              <option value="kas">💰 Kas Kelas (Rp 20.000)</option>
+              <option value="kebersihan">🧹 Iuran Kebersihan (Rp 100.000)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-[10px] text-gray-500 mb-1">Nama Murid</label>
+            <input type="text" id="admin-nama-murid" placeholder="Ketik nama murid" class="w-full border rounded-xl p-2 text-xs outline-none">
+          </div>
+
+          <div>
+            <label class="block text-[10px] text-gray-500 mb-1">Pilih Bulan</label>
+            <select id="admin-bulan" class="w-full border rounded-xl p-2 text-xs outline-none">
+              <option value="Juli 2026">Juli 2026</option>
+              <option value="Agustus 2026">Agustus 2026</option>
+              <option value="September 2026">September 2026</option>
+              <option value="Oktober 2026">Oktober 2026</option>
+              <option value="November 2026">November 2026</option>
+              <option value="Desember 2026">Desember 2026</option>
+            </select>
+          </div>
+
+          <button onclick="simpanPembayaranAdmin()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-semibold py-2.5 rounded-xl text-xs transition">
+            ✅ Tandai LUNAS
+          </button>
+        </div>
+      </div>
+
     </div>
 
   </main>
@@ -214,10 +276,33 @@
   </nav>
 
   <script>
+    // Logika Tab
     function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       const activeTab = document.getElementById('tab-' + tabId);
       if (activeTab) activeTab.classList.add('active');
+    }
+
+    // SIMULASI LOGIN ADMIN
+    function handleLogin() {
+      const email = document.getElementById('login-email').value;
+      const pass = document.getElementById('login-password').value;
+
+      if(email && pass) {
+        document.getElementById('admin-user-email').innerText = email;
+        document.getElementById('admin-login-box').classList.add('hidden');
+        document.getElementById('admin-dashboard-box').classList.remove('hidden');
+      } else {
+        alert('Mohon masukkan Email dan Password!');
+      }
+    }
+
+    // LOGOUT ADMIN
+    function handleLogout() {
+      document.getElementById('login-email').value = '';
+      document.getElementById('login-password').value = '';
+      document.getElementById('admin-dashboard-box').classList.add('hidden');
+      document.getElementById('admin-login-box').classList.remove('hidden');
     }
 
     function simpanPembayaranAdmin() {
@@ -226,10 +311,10 @@
       const bulan = document.getElementById('admin-bulan').value;
       
       if(!nama) {
-        alert('Mohon isi nama murid');
+        alert('Mohon isi nama murid terlebih dahulu');
         return;
       }
-      alert(`Berhasil menandai LUNAS untuk ${nama} (${jenis.toUpperCase()}) bulan ${bulan}`);
+      alert(`Berhasil! ${nama} telah ditandai LUNAS untuk pembayaran ${jenis.toUpperCase()} bulan ${bulan}`);
     }
 
     function cekStatusMandiri() {
@@ -237,20 +322,20 @@
       const container = document.getElementById('hasil-cek-mandiri');
       
       if(!kode) {
-        alert('Masukkan Kode Unik');
+        alert('Masukkan Kode Unik Anda');
         return;
       }
       
       container.innerHTML = `
         <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm space-y-2">
-          <div class="font-bold text-xs text-amber-900">Hasil Pencarian: ${kode}</div>
-          <div class="p-2 bg-emerald-50 text-emerald-800 rounded-xl text-xs flex justify-between">
-            <span>💰 Kas Kelas (Juli 2026)</span>
-            <span class="font-bold">LUNAS</span>
+          <div class="font-bold text-xs text-amber-900 border-b pb-1">Status Pembayaran Kode: ${kode}</div>
+          <div class="p-2 bg-emerald-50 text-emerald-800 rounded-xl text-xs flex justify-between items-center">
+            <span>💰 Kas Kelas (Rp 20.000)</span>
+            <span class="font-bold bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded text-[10px]">LUNAS</span>
           </div>
-          <div class="p-2 bg-rose-50 text-rose-800 rounded-xl text-xs flex justify-between">
-            <span>🧹 Kebersihan (Juli 2026)</span>
-            <span class="font-bold">BELUM</span>
+          <div class="p-2 bg-rose-50 text-rose-800 rounded-xl text-xs flex justify-between items-center">
+            <span>🧹 Iuran Kebersihan (Rp 100.000)</span>
+            <span class="font-bold bg-rose-200 text-rose-900 px-2 py-0.5 rounded text-[10px]">BELUM</span>
           </div>
         </div>
       `;

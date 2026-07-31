@@ -113,16 +113,17 @@
         </button>
       </div>
 
-      <!-- Rincian Transaksi Keluar Terbaru -->
+      <!-- Rincian Transaksi Keluar Terbaru (LANGSUNG KELIHATAN DI BERANDA) -->
       <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm space-y-3">
         <div class="flex items-center justify-between border-b pb-2">
           <h2 class="text-xs font-bold text-gray-800 flex items-center gap-1.5">
-            💸 Riwayat Pengeluaran
+            💸 Riwayat Pengeluaran (Uang Keluar)
           </h2>
-          <span class="text-[10px] text-gray-400">Terbaru</span>
+          <span class="text-[10px] text-amber-800 font-semibold bg-amber-50 px-2 py-0.5 rounded-full">Terbaru</span>
         </div>
+        
         <div id="daftar-pengeluaran" class="space-y-2">
-          <!-- Item pengeluaran dimasukkan lewat JavaScript -->
+          <!-- Daftar pengeluaran akan dimuat via JS di sini -->
         </div>
       </div>
 
@@ -136,7 +137,6 @@
         <div class="text-xs text-amber-700/80">/ bulan per anak</div>
       </div>
 
-      <!-- Informasi Privasi -->
       <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm space-y-2">
         <div class="flex items-center gap-2 text-xs font-bold text-amber-900">
           <span>🔒</span> Privasi Terjaga
@@ -155,7 +155,6 @@
         <div class="text-xs text-emerald-700/80">/ bulan per anak</div>
       </div>
 
-      <!-- Informasi Privasi -->
       <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm space-y-2">
         <div class="flex items-center gap-2 text-xs font-bold text-emerald-900">
           <span>🔒</span> Privasi Terjaga
@@ -232,11 +231,13 @@
 
         <!-- Section 1: Tandai Lunas -->
         <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm space-y-3">
-          <h3 class="font-bold text-xs text-gray-800 border-b pb-2">1. Tandai Pembayaran Murid LUNAS</h3>
+          <h3 class="font-bold text-xs text-amber-900 border-b pb-2 flex items-center gap-1">
+            <span>✅</span> 1. Tandai Pembayaran Murid LUNAS
+          </h3>
           
           <div>
             <label class="block text-[10px] text-gray-500 mb-1">Jenis Iuran</label>
-            <select id="admin-jenis-iuran" class="w-full border rounded-xl p-2 text-xs outline-none">
+            <select id="admin-jenis-iuran" class="w-full border rounded-xl p-2 text-xs outline-none bg-gray-50">
               <option value="kas">💰 Kas Kelas (Rp 20.000)</option>
               <option value="kebersihan">🧹 Iuran Kebersihan (Rp 100.000)</option>
             </select>
@@ -248,17 +249,19 @@
           </div>
 
           <button onclick="simpanPembayaranAdmin()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-semibold py-2.5 rounded-xl text-xs transition">
-            ✅ Tandai LUNAS
+            Simpan Status LUNAS
           </button>
         </div>
 
-        <!-- Section 2: Catat Pengeluaran Kas -->
+        <!-- Section 2: Catat Pengeluaran Kas (INPUT KELUAR DANA) -->
         <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm space-y-3">
-          <h3 class="font-bold text-xs text-gray-800 border-b pb-2">2. Catat Transaksi Pengeluaran (Uang Keluar)</h3>
+          <h3 class="font-bold text-xs text-rose-900 border-b pb-2 flex items-center gap-1">
+            <span>💸</span> 2. Catat Transaksi Pengeluaran (Uang Keluar)
+          </h3>
           
           <div>
             <label class="block text-[10px] text-gray-500 mb-1">Kategori Sumber Dana</label>
-            <select id="admin-pengeluaran-sumber" class="w-full border rounded-xl p-2 text-xs outline-none">
+            <select id="admin-pengeluaran-sumber" class="w-full border rounded-xl p-2 text-xs outline-none bg-gray-50">
               <option value="kas">💰 Kas Kelas</option>
               <option value="kebersihan">🧹 Iuran Kebersihan</option>
             </select>
@@ -266,16 +269,16 @@
 
           <div>
             <label class="block text-[10px] text-gray-500 mb-1">Keterangan Pengeluaran</label>
-            <input type="text" id="admin-pengeluaran-ket" placeholder="misal: Beli Alat Tulis / Gaji Petugas Kebersihan" class="w-full border rounded-xl p-2 text-xs outline-none">
+            <input type="text" id="admin-pengeluaran-ket" placeholder="misal: Beli Sapu / Fotokopi / Gaji Kebersihan" class="w-full border rounded-xl p-2 text-xs outline-none">
           </div>
 
           <div>
             <label class="block text-[10px] text-gray-500 mb-1">Nominal (Rp)</label>
-            <input type="number" id="admin-pengeluaran-nominal" placeholder="misal: 50000" class="w-full border rounded-xl p-2 text-xs outline-none">
+            <input type="number" id="admin-pengeluaran-nominal" placeholder="misal: 25000" class="w-full border rounded-xl p-2 text-xs outline-none">
           </div>
 
           <button onclick="catatPengeluaranAdmin()" class="w-full bg-rose-700 hover:bg-rose-800 text-white font-semibold py-2.5 rounded-xl text-xs transition">
-            💸 Catat Pengeluaran
+            Simpan Pengeluaran
           </button>
         </div>
       </div>
@@ -313,16 +316,21 @@
     let lunasKas = [];
     let lunasKebersihan = [];
 
-    // Data Saldo & Pengeluaran
+    // Data Total Saldo Masuk
     let totalMasukKas = 0;
     let totalMasukKebersihan = 0;
 
+    // Contoh data pengeluaran bawaan (dummy) agar langsung terlihat di tampilan Beranda
     let daftarPengeluaran = [
-      // Contoh awal (bisa dihapus/diisi lewat admin)
+      {
+        sumber: 'kas',
+        keterangan: 'Spidol & Penghapus Papan Tulis',
+        nominal: 25000,
+        tanggal: '1 Ags'
+      }
     ];
 
     function updateTampilanSaldo() {
-      // Hitung Pengeluaran Kas vs Kebersihan
       let totalKeluarKas = 0;
       let totalKeluarKebersihan = 0;
 
@@ -348,15 +356,15 @@
     function renderPengeluaran() {
       const container = document.getElementById('daftar-pengeluaran');
       if (daftarPengeluaran.length === 0) {
-        container.innerHTML = `<p class="text-xs text-gray-400 text-center py-2">Belum ada catatan pengeluaran.</p>`;
+        container.innerHTML = `<p class="text-xs text-gray-400 text-center py-3 border border-dashed rounded-xl">Belum ada rincian pengeluaran.</p>`;
         return;
       }
 
       container.innerHTML = daftarPengeluaran.map(item => `
-        <div class="flex items-center justify-between bg-amber-50/50 p-2.5 rounded-xl border border-amber-100/60">
+        <div class="flex items-center justify-between bg-amber-50/60 p-2.5 rounded-xl border border-amber-100/70">
           <div>
             <div class="text-xs font-semibold text-gray-800">${item.keterangan}</div>
-            <div class="text-[10px] text-gray-400">${item.tanggal} • <span class="font-medium text-amber-800">${item.sumber === 'kas' ? 'Kas Kelas' : 'Iuran Kebersihan'}</span></div>
+            <div class="text-[10px] text-gray-400">${item.tanggal} • <span class="font-medium text-amber-900">${item.sumber === 'kas' ? 'Kas Kelas' : 'Iuran Kebersihan'}</span></div>
           </div>
           <div class="text-xs font-bold text-rose-600">
             - Rp ${item.nominal.toLocaleString('id-ID')}
@@ -441,6 +449,9 @@
       alert('Pengeluaran berhasil dicatat!');
       document.getElementById('admin-pengeluaran-ket').value = '';
       document.getElementById('admin-pengeluaran-nominal').value = '';
+      
+      // Pindahkan langsung ke tab Beranda agar bisa melihat hasilnya
+      switchTab('beranda');
     }
 
     function cekStatusMandiri() {
@@ -480,7 +491,7 @@
       `;
     }
 
-    // Jalankan kalkulasi saldo awal saat pertama kali dimuat
+    // Inisialisasi tampilan awal
     updateTampilanSaldo();
   </script>
 </body>

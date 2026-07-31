@@ -113,7 +113,7 @@
         </button>
       </div>
 
-      <!-- Rincian Transaksi Keluar Terbaru (LANGSUNG KELIHATAN DI BERANDA) -->
+      <!-- Rincian Transaksi Keluar Terbaru -->
       <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm space-y-3">
         <div class="flex items-center justify-between border-b pb-2">
           <h2 class="text-xs font-bold text-gray-800 flex items-center gap-1.5">
@@ -123,7 +123,7 @@
         </div>
         
         <div id="daftar-pengeluaran" class="space-y-2">
-          <!-- Daftar pengeluaran akan dimuat via JS di sini -->
+          <!-- Transaksi pengeluaran akan tampil otomatis setelah diinput admin -->
         </div>
       </div>
 
@@ -253,7 +253,7 @@
           </button>
         </div>
 
-        <!-- Section 2: Catat Pengeluaran Kas (INPUT KELUAR DANA) -->
+        <!-- Section 2: Catat Pengeluaran Kas -->
         <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm space-y-3">
           <h3 class="font-bold text-xs text-rose-900 border-b pb-2 flex items-center gap-1">
             <span>💸</span> 2. Catat Transaksi Pengeluaran (Uang Keluar)
@@ -320,15 +320,8 @@
     let totalMasukKas = 0;
     let totalMasukKebersihan = 0;
 
-    // Contoh data pengeluaran bawaan (dummy) agar langsung terlihat di tampilan Beranda
-    let daftarPengeluaran = [
-      {
-        sumber: 'kas',
-        keterangan: 'Spidol & Penghapus Papan Tulis',
-        nominal: 25000,
-        tanggal: '1 Ags'
-      }
-    ];
+    // Array pengeluaran kosong (tanpa contoh dummy)
+    let daftarPengeluaran = [];
 
     function updateTampilanSaldo() {
       let totalKeluarKas = 0;
@@ -356,7 +349,7 @@
     function renderPengeluaran() {
       const container = document.getElementById('daftar-pengeluaran');
       if (daftarPengeluaran.length === 0) {
-        container.innerHTML = `<p class="text-xs text-gray-400 text-center py-3 border border-dashed rounded-xl">Belum ada rincian pengeluaran.</p>`;
+        container.innerHTML = `<p class="text-xs text-gray-400 text-center py-3 border border-dashed rounded-xl">Belum ada catatan pengeluaran.</p>`;
         return;
       }
 
@@ -450,7 +443,6 @@
       document.getElementById('admin-pengeluaran-ket').value = '';
       document.getElementById('admin-pengeluaran-nominal').value = '';
       
-      // Pindahkan langsung ke tab Beranda agar bisa melihat hasilnya
       switchTab('beranda');
     }
 

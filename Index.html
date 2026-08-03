@@ -313,6 +313,17 @@
   </nav>
 
   <script>
+    // --- DAFTAR MURID & KODE UNIK ---
+    // Kamu bisa ubah/tambahkan daftar nama dan kode unik anak di bawah ini sesuai kebutuhan
+    const DATA_MURID = {
+      "abc01": "Ahmad Dani",
+      "abc02": "Budi Santoso",
+      "abc03": "Citra Lestari",
+      "abc04": "Deni Pratama",
+      "abc05": "Eka Rahmawati"
+      // Tambahkan pasangan "kode_unik": "Nama Lengkap" lainnya di sini...
+    };
+
     // --- KONFIGURASI SUPABASE ---
     const SUPABASE_URL = 'https://fbfkshoodkuygzllsevx.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_lk55DdlR28z3teCZsPhv5A_vAevt7-2';
@@ -490,6 +501,9 @@
 
       const kodeLower = inputKode.toLowerCase();
 
+      // Cari Nama Murid dari daftar DATA_MURID, jika tidak ada tampilkan nama generik/default
+      const namaMurid = DATA_MURID[kodeLower] || "Ananda (" + inputKode.toUpperCase() + ")";
+
       const isKasKelasLunas = lunasKasKelas.includes(kodeLower);
       const isKasKomiteLunas = lunasKasKomite.includes(kodeLower);
 
@@ -503,7 +517,11 @@
       
       container.innerHTML = `
         <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm space-y-2">
-          <div class="font-bold text-xs text-amber-900 border-b pb-1">Status Pembayaran Kode: ${inputKode}</div>
+          <div class="border-b pb-2">
+            <div class="text-xs text-gray-400">Nama Siswa / Siswi:</div>
+            <div class="font-bold text-sm text-amber-900">${namaMurid}</div>
+            <div class="text-[10px] text-gray-400">Kode Unik: ${inputKode.toLowerCase()}</div>
+          </div>
           <div class="p-2 ${rowKasKelasBg} rounded-xl text-xs flex justify-between items-center">
             <span>💰 Kas Kelas (Rp 10.000)</span>
             <span class="font-bold ${statusKasKelasClass} px-2 py-0.5 rounded text-[10px]">${statusKasKelasText}</span>

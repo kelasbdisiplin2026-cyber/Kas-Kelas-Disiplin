@@ -123,7 +123,7 @@
         </div>
         
         <div id="daftar-pengeluaran" class="space-y-2">
-          <!-- Transaksi pengeluaran akan tampil otomatis setelah diinput admin -->
+          <p class="text-xs text-gray-400 text-center py-3">Memuat data pengeluaran...</p>
         </div>
       </div>
 
@@ -313,23 +313,62 @@
   </nav>
 
   <script>
+    // --- KONFIGURASI SUPABASE ---
+    const SUPABASE_URL = 'https://fbfkshoodkuygzllsevx.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_lk55DdlR28z3teCZsPhv5A_vAevt7-2';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
     let lunasKasKelas = [];
     let lunasKasKomite = [];
-
-    // Data Total Saldo Masuk
-    let totalMasukKasKelas = 0;
-    let totalMasukKasKomite = 0;
-
-    // Array pengeluaran
     let daftarPengeluaran = [];
 
+    // Muat data dari Supabase secara Realtime & Inisialisasi
+    async function initData() {
+      await fetchPembayaran();
+      await fetchPengeluaran();
+      
+      // Mengaktifkan Listener Realtime
+      supabaseClient
+        .channel('public-db-changes')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'pembayaran' }, () => fetchPembayaran())
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'pengeluaran' }, () => fetchPengeluaran())
+        .subscribe();
+    }
+
+    async function fetchPembayaran() {
+      const { data, error } = await supabaseClient.from('pembayaran').select('*');
+      if (error) {
+        console.error('Gagal mengambil data pembayaran:', error);
+        return;
+      }
+      
+      lunasKasKelas = data.filter(d => d.jenis === 'kas-kelas').map(d => d.kode_unik.toLowerCase());
+      lunasKasKomite = data.filter(d => d.jenis === 'kas-komite').map(d => d.kode_unik.toLowerCase());
+      
+      updateTampilanSaldo();
+    }
+
+    async function fetchPengeluaran() {
+      const { data, error } = await supabaseClient.from('pengeluaran').select('*').order('created_at', { ascending: false });
+      if (error) {
+        console.error('Gagal mengambil data pengeluaran:', error);
+        return;
+      }
+
+      daftarPengeluaran = data || [];
+      updateTampilanSaldo();
+    }
+
     function updateTampilanSaldo() {
+      let totalMasukKasKelas = lunasKasKelas.length * 10000;
+      let totalMasukKasKomite = lunasKasKomite.length * 20000;
+
       let totalKeluarKasKelas = 0;
       let totalKeluarKasKomite = 0;
 
       daftarPengeluaran.forEach(p => {
-        if(p.sumber === 'kas-kelas') totalKeluarKasKelas += p.nominal;
-        if(p.sumber === 'kas-komite') totalKeluarKasKomite += p.nominal;
+        if(p.sumber === 'kas-kelas') totalKeluarKasKelas += Number(p.nominal);
+        if(p.sumber === 'kas-komite') totalKeluarKasKomite += Number(p.nominal);
       });
 
       let saldoKasKelas = totalMasukKasKelas - totalKeluarKasKelas;
@@ -357,10 +396,10 @@
         <div class="flex items-center justify-between bg-amber-50/60 p-2.5 rounded-xl border border-amber-100/70">
           <div>
             <div class="text-xs font-semibold text-gray-800">${item.keterangan}</div>
-            <div class="text-[10px] text-gray-400">${item.tanggal} • <span class="font-medium text-amber-900">${item.sumber === 'kas-kelas' ? 'Kas Kelas' : 'Kas Komite'}</span></div>
+            <div class="text-[10px] text-gray-400">${item.tanggal || ''} • <span class="font-medium text-amber-900">${item.sumber === 'kas-kelas' ? 'Kas Kelas' : 'Kas Komite'}</span></div>
           </div>
           <div class="text-xs font-bold text-rose-600">
-            - Rp ${item.nominal.toLocaleString('id-ID')}
+            - Rp ${Number(item.nominal).toLocaleString('id-ID')}
           </div>
         </div>
       `).join('');
@@ -372,7 +411,7 @@
       if (activeTab) activeTab.classList.add('active');
     }
 
-    function handleLogin() {
+    async function handleLogin() {
       const email = document.getElementById('login-email').value;
       const pass = document.getElementById('login-password').value;
 
@@ -392,7 +431,7 @@
       document.getElementById('admin-login-box').classList.remove('hidden');
     }
 
-    function simpanPembayaranAdmin() {
+    async function simpanPembayaranAdmin() {
       const jenis = document.getElementById('admin-jenis-iuran').value;
       const kode = document.getElementById('admin-kode-unik').value.trim();
       
@@ -401,24 +440,19 @@
         return;
       }
 
-      if (jenis === 'kas-kelas') {
-        if (!lunasKasKelas.includes(kode.toLowerCase())) {
-          lunasKasKelas.push(kode.toLowerCase());
-          totalMasukKasKelas += 10000;
-        }
-      } else {
-        if (!lunasKasKomite.includes(kode.toLowerCase())) {
-          lunasKasKomite.push(kode.toLowerCase());
-          totalMasukKasKomite += 20000;
-        }
-      }
+      const { error } = await supabaseClient.from('pembayaran').insert([
+        { jenis: jenis, kode_unik: kode.toLowerCase() }
+      ]);
 
-      updateTampilanSaldo();
-      alert(`Berhasil! Kode ${kode} telah ditandai LUNAS untuk ${jenis === 'kas-kelas' ? 'Kas Kelas (10rb)' : 'Kas Komite (20rb)'}`);
-      document.getElementById('admin-kode-unik').value = '';
+      if (error) {
+        alert('Gagal menyimpan pembayaran: ' + error.message);
+      } else {
+        alert(`Berhasil! Kode ${kode} telah ditandai LUNAS`);
+        document.getElementById('admin-kode-unik').value = '';
+      }
     }
 
-    function catatPengeluaranAdmin() {
+    async function catatPengeluaranAdmin() {
       const sumber = document.getElementById('admin-pengeluaran-sumber').value;
       const ket = document.getElementById('admin-pengeluaran-ket').value.trim();
       const nom = parseInt(document.getElementById('admin-pengeluaran-nominal').value);
@@ -431,19 +465,18 @@
       const today = new Date();
       const tglStr = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
 
-      daftarPengeluaran.unshift({
-        sumber: sumber,
-        keterangan: ket,
-        nominal: nom,
-        tanggal: tglStr
-      });
+      const { error } = await supabaseClient.from('pengeluaran').insert([
+        { sumber: sumber, keterangan: ket, nominal: nom, tanggal: tglStr }
+      ]);
 
-      updateTampilanSaldo();
-      alert('Pengeluaran berhasil dicatat!');
-      document.getElementById('admin-pengeluaran-ket').value = '';
-      document.getElementById('admin-pengeluaran-nominal').value = '';
-      
-      switchTab('beranda');
+      if (error) {
+        alert('Gagal mencatat pengeluaran: ' + error.message);
+      } else {
+        alert('Pengeluaran berhasil dicatat!');
+        document.getElementById('admin-pengeluaran-ket').value = '';
+        document.getElementById('admin-pengeluaran-nominal').value = '';
+        switchTab('beranda');
+      }
     }
 
     function cekStatusMandiri() {
@@ -483,8 +516,8 @@
       `;
     }
 
-    // Inisialisasi tampilan awal
-    updateTampilanSaldo();
+    // Jalankan integrasi Supabase saat aplikasi dibuka
+    initData();
   </script>
 </body>
 </html>

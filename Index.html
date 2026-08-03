@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kas & Iuran Kelas DISIPLIN</title>
+  <title>Kas Kelas DISIPLIN</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -34,57 +34,62 @@
     <!-- TAB 1: BERANDA -->
     <div id="tab-beranda" class="tab-content active space-y-4">
       
-      <!-- Card Saldo 1: Kas Kelas -->
+      <!-- Card Saldo 1: Kas Kelas (Rp 10.000) -->
       <div class="bg-gradient-to-br from-amber-800 to-amber-900 text-white rounded-2xl p-4 shadow-lg">
         <div class="flex justify-between items-center mb-1">
           <span class="text-xs font-semibold bg-amber-700/50 px-2.5 py-0.5 rounded-full border border-amber-600/30">
             💰 Saldo Kas Kelas
           </span>
-          <span class="text-[10px] text-amber-200">Rp 20.000/bln</span>
+          <span class="text-[10px] text-amber-200">Rp 10.000/bln</span>
         </div>
-        <div class="text-2xl font-extrabold tracking-tight my-2" id="saldo-kas">
+        <div class="text-2xl font-extrabold tracking-tight my-2" id="saldo-kas-kelas">
           Rp 0
         </div>
         <div class="grid grid-cols-2 gap-2 bg-black/20 rounded-xl p-2.5 backdrop-blur-sm text-[11px]">
           <div>
             <span class="text-amber-200 block">Masuk</span>
-            <span class="font-semibold text-emerald-400" id="masuk-kas">Rp 0</span>
+            <span class="font-semibold text-emerald-400" id="masuk-kas-kelas">Rp 0</span>
           </div>
           <div>
             <span class="text-amber-200 block">Keluar</span>
-            <span class="font-semibold text-rose-400" id="keluar-kas">Rp 0</span>
+            <span class="font-semibold text-rose-400" id="keluar-kas-kelas">Rp 0</span>
           </div>
         </div>
       </div>
 
-      <!-- Card Saldo 2: Iuran Kebersihan -->
-      <div class="bg-gradient-to-br from-emerald-800 to-emerald-900 text-white rounded-2xl p-4 shadow-lg">
+      <!-- Card Saldo 2: Kas Komite (Rp 20.000) -->
+      <div class="bg-gradient-to-br from-indigo-800 to-indigo-900 text-white rounded-2xl p-4 shadow-lg">
         <div class="flex justify-between items-center mb-1">
-          <span class="text-xs font-semibold bg-emerald-700/50 px-2.5 py-0.5 rounded-full border border-emerald-600/30">
-            🧹 Saldo Iuran Kebersihan
+          <span class="text-xs font-semibold bg-indigo-700/50 px-2.5 py-0.5 rounded-full border border-indigo-600/30">
+            🏫 Saldo Kas Komite
           </span>
-          <span class="text-[10px] text-emerald-200">Rp 100.000/bln</span>
+          <span class="text-[10px] text-indigo-200">Rp 20.000/bln</span>
         </div>
-        <div class="text-2xl font-extrabold tracking-tight my-2" id="saldo-kebersihan">
+        <div class="text-2xl font-extrabold tracking-tight my-2" id="saldo-kas-komite">
           Rp 0
         </div>
         <div class="grid grid-cols-2 gap-2 bg-black/20 rounded-xl p-2.5 backdrop-blur-sm text-[11px]">
           <div>
-            <span class="text-emerald-200 block">Masuk</span>
-            <span class="font-semibold text-emerald-300" id="masuk-kebersihan">Rp 0</span>
+            <span class="text-indigo-200 block">Masuk</span>
+            <span class="font-semibold text-emerald-300" id="masuk-kas-komite">Rp 0</span>
           </div>
           <div>
-            <span class="text-emerald-200 block">Keluar</span>
-            <span class="font-semibold text-rose-300" id="keluar-kebersihan">Rp 0</span>
+            <span class="text-indigo-200 block">Keluar</span>
+            <span class="font-semibold text-rose-300" id="keluar-kas-komite">Rp 0</span>
           </div>
         </div>
       </div>
 
       <!-- Quick Menu Grid 6 Tombol -->
       <div class="grid grid-cols-3 gap-3">
-        <button onclick="switchTab('kas')" class="bg-white p-3.5 rounded-xl border border-gray-100 shadow-sm text-center hover:bg-amber-50/50">
+        <button onclick="switchTab('kas-kelas')" class="bg-white p-3.5 rounded-xl border border-gray-100 shadow-sm text-center hover:bg-amber-50/50">
           <div class="text-2xl mb-1">💰</div>
-          <div class="text-xs font-semibold text-gray-700">Kas & Iuran</div>
+          <div class="text-xs font-semibold text-gray-700">Kas Kelas</div>
+        </button>
+
+        <button onclick="switchTab('kas-komite')" class="bg-white p-3.5 rounded-xl border border-gray-100 shadow-sm text-center hover:bg-amber-50/50">
+          <div class="text-2xl mb-1">🏫</div>
+          <div class="text-xs font-semibold text-gray-700">Kas Komite</div>
         </button>
 
         <button onclick="switchTab('cek')" class="bg-white p-3.5 rounded-xl border border-gray-100 shadow-sm text-center hover:bg-amber-50/50">
@@ -100,11 +105,6 @@
         <button onclick="switchTab('agenda')" class="bg-white p-3.5 rounded-xl border border-gray-100 shadow-sm text-center hover:bg-amber-50/50">
           <div class="text-2xl mb-1">📅</div>
           <div class="text-xs font-semibold text-gray-700">Agenda</div>
-        </button>
-
-        <button onclick="switchTab('kebersihan')" class="bg-white p-3.5 rounded-xl border border-gray-100 shadow-sm text-center hover:bg-amber-50/50">
-          <div class="text-2xl mb-1">🧹</div>
-          <div class="text-xs font-semibold text-gray-700">Kebersihan</div>
         </button>
 
         <button onclick="switchTab('admin')" class="bg-white p-3.5 rounded-xl border border-gray-100 shadow-sm text-center hover:bg-amber-50/50">
@@ -129,11 +129,11 @@
 
     </div>
 
-    <!-- TAB 2: KAS & IURAN (Rp 20.000) -->
-    <div id="tab-kas" class="tab-content space-y-4">
+    <!-- TAB 2: KAS KELAS (Rp 10.000) -->
+    <div id="tab-kas-kelas" class="tab-content space-y-4">
       <div class="bg-amber-100/50 border border-amber-200/60 rounded-2xl p-4">
-        <div class="text-xs font-semibold text-amber-800 mb-1">💰 Target Iuran Kas Bulanan</div>
-        <div class="text-2xl font-bold text-amber-950">Rp 20.000</div>
+        <div class="text-xs font-semibold text-amber-800 mb-1">💰 Target Kas Kelas</div>
+        <div class="text-2xl font-bold text-amber-950">Rp 10.000</div>
         <div class="text-xs text-amber-700/80">/ bulan per anak</div>
       </div>
 
@@ -147,20 +147,20 @@
       </div>
     </div>
 
-    <!-- TAB 3: IURAN KEBERSIHAN (Rp 100.000) -->
-    <div id="tab-kebersihan" class="tab-content space-y-4">
-      <div class="bg-emerald-100/50 border border-emerald-200/60 rounded-2xl p-4">
-        <div class="text-xs font-semibold text-emerald-800 mb-1">🧹 Target Iuran Kebersihan</div>
-        <div class="text-2xl font-bold text-emerald-950">Rp 100.000</div>
-        <div class="text-xs text-emerald-700/80">/ bulan per anak</div>
+    <!-- TAB 3: KAS KOMITE (Rp 20.000) -->
+    <div id="tab-kas-komite" class="tab-content space-y-4">
+      <div class="bg-indigo-100/50 border border-indigo-200/60 rounded-2xl p-4">
+        <div class="text-xs font-semibold text-indigo-800 mb-1">🏫 Target Kas Komite</div>
+        <div class="text-2xl font-bold text-indigo-950">Rp 20.000</div>
+        <div class="text-xs text-indigo-700/80">/ bulan per anak</div>
       </div>
 
       <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm space-y-2">
-        <div class="flex items-center gap-2 text-xs font-bold text-emerald-900">
+        <div class="flex items-center gap-2 text-xs font-bold text-indigo-900">
           <span>🔒</span> Privasi Terjaga
         </div>
         <p class="text-xs text-gray-500 leading-relaxed">
-          Nama murid yang sudah/belum bayar tidak dipublikasikan secara umum. Silakan gunakan menu <span class="font-bold text-emerald-900">Cek Saya</span> dengan Kode Unik ananda Anda untuk melihat status pembayaran pribadi.
+          Nama murid yang sudah/belum bayar tidak dipublikasikan secara umum. Silakan gunakan menu <span class="font-bold text-indigo-900">Cek Saya</span> dengan Kode Unik ananda Anda untuk melihat status pembayaran pribadi.
         </p>
       </div>
     </div>
@@ -236,10 +236,10 @@
           </h3>
           
           <div>
-            <label class="block text-[10px] text-gray-500 mb-1">Jenis Iuran</label>
+            <label class="block text-[10px] text-gray-500 mb-1">Jenis Kas</label>
             <select id="admin-jenis-iuran" class="w-full border rounded-xl p-2 text-xs outline-none bg-gray-50">
-              <option value="kas">💰 Kas Kelas (Rp 20.000)</option>
-              <option value="kebersihan">🧹 Iuran Kebersihan (Rp 100.000)</option>
+              <option value="kas-kelas">💰 Kas Kelas (Rp 10.000)</option>
+              <option value="kas-komite">🏫 Kas Komite (Rp 20.000)</option>
             </select>
           </div>
 
@@ -262,19 +262,19 @@
           <div>
             <label class="block text-[10px] text-gray-500 mb-1">Kategori Sumber Dana</label>
             <select id="admin-pengeluaran-sumber" class="w-full border rounded-xl p-2 text-xs outline-none bg-gray-50">
-              <option value="kas">💰 Kas Kelas</option>
-              <option value="kebersihan">🧹 Iuran Kebersihan</option>
+              <option value="kas-kelas">💰 Kas Kelas</option>
+              <option value="kas-komite">🏫 Kas Komite</option>
             </select>
           </div>
 
           <div>
             <label class="block text-[10px] text-gray-500 mb-1">Keterangan Pengeluaran</label>
-            <input type="text" id="admin-pengeluaran-ket" placeholder="misal: Beli Sapu / Fotokopi / Gaji Kebersihan" class="w-full border rounded-xl p-2 text-xs outline-none">
+            <input type="text" id="admin-pengeluaran-ket" placeholder="misal: Beli Spidol / Foto Kegiatan" class="w-full border rounded-xl p-2 text-xs outline-none">
           </div>
 
           <div>
             <label class="block text-[10px] text-gray-500 mb-1">Nominal (Rp)</label>
-            <input type="number" id="admin-pengeluaran-nominal" placeholder="misal: 25000" class="w-full border rounded-xl p-2 text-xs outline-none">
+            <input type="number" id="admin-pengeluaran-nominal" placeholder="misal: 15000" class="w-full border rounded-xl p-2 text-xs outline-none">
           </div>
 
           <button onclick="catatPengeluaranAdmin()" class="w-full bg-rose-700 hover:bg-rose-800 text-white font-semibold py-2.5 rounded-xl text-xs transition">
@@ -293,13 +293,13 @@
         <span class="text-base">🏠</span>
         <span>Beranda</span>
       </button>
-      <button onclick="switchTab('kas')" class="flex flex-col items-center gap-1 hover:text-amber-800">
+      <button onclick="switchTab('kas-kelas')" class="flex flex-col items-center gap-1 hover:text-amber-800">
         <span class="text-base">💰</span>
-        <span>Kas</span>
+        <span>Kas Kelas</span>
       </button>
-      <button onclick="switchTab('kebersihan')" class="flex flex-col items-center gap-1 hover:text-amber-800">
-        <span class="text-base">🧹</span>
-        <span>Kebersihan</span>
+      <button onclick="switchTab('kas-komite')" class="flex flex-col items-center gap-1 hover:text-amber-800">
+        <span class="text-base">🏫</span>
+        <span>Kas Komite</span>
       </button>
       <button onclick="switchTab('cek')" class="flex flex-col items-center gap-1 hover:text-amber-800">
         <span class="text-base">🔍</span>
@@ -313,35 +313,35 @@
   </nav>
 
   <script>
-    let lunasKas = [];
-    let lunasKebersihan = [];
+    let lunasKasKelas = [];
+    let lunasKasKomite = [];
 
     // Data Total Saldo Masuk
-    let totalMasukKas = 0;
-    let totalMasukKebersihan = 0;
+    let totalMasukKasKelas = 0;
+    let totalMasukKasKomite = 0;
 
-    // Array pengeluaran kosong (tanpa contoh dummy)
+    // Array pengeluaran
     let daftarPengeluaran = [];
 
     function updateTampilanSaldo() {
-      let totalKeluarKas = 0;
-      let totalKeluarKebersihan = 0;
+      let totalKeluarKasKelas = 0;
+      let totalKeluarKasKomite = 0;
 
       daftarPengeluaran.forEach(p => {
-        if(p.sumber === 'kas') totalKeluarKas += p.nominal;
-        if(p.sumber === 'kebersihan') totalKeluarKebersihan += p.nominal;
+        if(p.sumber === 'kas-kelas') totalKeluarKasKelas += p.nominal;
+        if(p.sumber === 'kas-komite') totalKeluarKasKomite += p.nominal;
       });
 
-      let saldoKas = totalMasukKas - totalKeluarKas;
-      let saldoKebersihan = totalMasukKebersihan - totalKeluarKebersihan;
+      let saldoKasKelas = totalMasukKasKelas - totalKeluarKasKelas;
+      let saldoKasKomite = totalMasukKasKomite - totalKeluarKasKomite;
 
-      document.getElementById('saldo-kas').innerText = `Rp ${saldoKas.toLocaleString('id-ID')}`;
-      document.getElementById('masuk-kas').innerText = `Rp ${totalMasukKas.toLocaleString('id-ID')}`;
-      document.getElementById('keluar-kas').innerText = `Rp ${totalKeluarKas.toLocaleString('id-ID')}`;
+      document.getElementById('saldo-kas-kelas').innerText = `Rp ${saldoKasKelas.toLocaleString('id-ID')}`;
+      document.getElementById('masuk-kas-kelas').innerText = `Rp ${totalMasukKasKelas.toLocaleString('id-ID')}`;
+      document.getElementById('keluar-kas-kelas').innerText = `Rp ${totalKeluarKasKelas.toLocaleString('id-ID')}`;
 
-      document.getElementById('saldo-kebersihan').innerText = `Rp ${saldoKebersihan.toLocaleString('id-ID')}`;
-      document.getElementById('masuk-kebersihan').innerText = `Rp ${totalMasukKebersihan.toLocaleString('id-ID')}`;
-      document.getElementById('keluar-kebersihan').innerText = `Rp ${totalKeluarKebersihan.toLocaleString('id-ID')}`;
+      document.getElementById('saldo-kas-komite').innerText = `Rp ${saldoKasKomite.toLocaleString('id-ID')}`;
+      document.getElementById('masuk-kas-komite').innerText = `Rp ${totalMasukKasKomite.toLocaleString('id-ID')}`;
+      document.getElementById('keluar-kas-komite').innerText = `Rp ${totalKeluarKasKomite.toLocaleString('id-ID')}`;
 
       renderPengeluaran();
     }
@@ -357,7 +357,7 @@
         <div class="flex items-center justify-between bg-amber-50/60 p-2.5 rounded-xl border border-amber-100/70">
           <div>
             <div class="text-xs font-semibold text-gray-800">${item.keterangan}</div>
-            <div class="text-[10px] text-gray-400">${item.tanggal} • <span class="font-medium text-amber-900">${item.sumber === 'kas' ? 'Kas Kelas' : 'Iuran Kebersihan'}</span></div>
+            <div class="text-[10px] text-gray-400">${item.tanggal} • <span class="font-medium text-amber-900">${item.sumber === 'kas-kelas' ? 'Kas Kelas' : 'Kas Komite'}</span></div>
           </div>
           <div class="text-xs font-bold text-rose-600">
             - Rp ${item.nominal.toLocaleString('id-ID')}
@@ -401,20 +401,20 @@
         return;
       }
 
-      if (jenis === 'kas') {
-        if (!lunasKas.includes(kode.toLowerCase())) {
-          lunasKas.push(kode.toLowerCase());
-          totalMasukKas += 20000;
+      if (jenis === 'kas-kelas') {
+        if (!lunasKasKelas.includes(kode.toLowerCase())) {
+          lunasKasKelas.push(kode.toLowerCase());
+          totalMasukKasKelas += 10000;
         }
       } else {
-        if (!lunasKebersihan.includes(kode.toLowerCase())) {
-          lunasKebersihan.push(kode.toLowerCase());
-          totalMasukKebersihan += 100000;
+        if (!lunasKasKomite.includes(kode.toLowerCase())) {
+          lunasKasKomite.push(kode.toLowerCase());
+          totalMasukKasKomite += 20000;
         }
       }
 
       updateTampilanSaldo();
-      alert(`Berhasil! Kode ${kode} telah ditandai LUNAS untuk ${jenis.toUpperCase()}`);
+      alert(`Berhasil! Kode ${kode} telah ditandai LUNAS untuk ${jenis === 'kas-kelas' ? 'Kas Kelas (10rb)' : 'Kas Komite (20rb)'}`);
       document.getElementById('admin-kode-unik').value = '';
     }
 
@@ -457,27 +457,27 @@
 
       const kodeLower = inputKode.toLowerCase();
 
-      const isKasLunas = lunasKas.includes(kodeLower);
-      const isKebersihanLunas = lunasKebersihan.includes(kodeLower);
+      const isKasKelasLunas = lunasKasKelas.includes(kodeLower);
+      const isKasKomiteLunas = lunasKasKomite.includes(kodeLower);
 
-      const statusKasText = isKasLunas ? 'LUNAS' : 'BELUM';
-      const statusKasClass = isKasLunas ? 'bg-emerald-200 text-emerald-900' : 'bg-rose-200 text-rose-900';
-      const rowKasBg = isKasLunas ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800';
+      const statusKasKelasText = isKasKelasLunas ? 'LUNAS' : 'BELUM';
+      const statusKasKelasClass = isKasKelasLunas ? 'bg-emerald-200 text-emerald-900' : 'bg-rose-200 text-rose-900';
+      const rowKasKelasBg = isKasKelasLunas ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800';
 
-      const statusKebersihanText = isKebersihanLunas ? 'LUNAS' : 'BELUM';
-      const statusKebersihanClass = isKebersihanLunas ? 'bg-emerald-200 text-emerald-900' : 'bg-rose-200 text-rose-900';
-      const rowKebersihanBg = isKebersihanLunas ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800';
+      const statusKasKomiteText = isKasKomiteLunas ? 'LUNAS' : 'BELUM';
+      const statusKasKomiteClass = isKasKomiteLunas ? 'bg-emerald-200 text-emerald-900' : 'bg-rose-200 text-rose-900';
+      const rowKasKomiteBg = isKasKomiteLunas ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800';
       
       container.innerHTML = `
         <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm space-y-2">
           <div class="font-bold text-xs text-amber-900 border-b pb-1">Status Pembayaran Kode: ${inputKode}</div>
-          <div class="p-2 ${rowKasBg} rounded-xl text-xs flex justify-between items-center">
-            <span>💰 Kas Kelas (Rp 20.000)</span>
-            <span class="font-bold ${statusKasClass} px-2 py-0.5 rounded text-[10px]">${statusKasText}</span>
+          <div class="p-2 ${rowKasKelasBg} rounded-xl text-xs flex justify-between items-center">
+            <span>💰 Kas Kelas (Rp 10.000)</span>
+            <span class="font-bold ${statusKasKelasClass} px-2 py-0.5 rounded text-[10px]">${statusKasKelasText}</span>
           </div>
-          <div class="p-2 ${rowKebersihanBg} rounded-xl text-xs flex justify-between items-center">
-            <span>🧹 Iuran Kebersihan (Rp 100.000)</span>
-            <span class="font-bold ${statusKebersihanClass} px-2 py-0.5 rounded text-[10px]">${statusKebersihanText}</span>
+          <div class="p-2 ${rowKasKomiteBg} rounded-xl text-xs flex justify-between items-center">
+            <span>🏫 Kas Komite (Rp 20.000)</span>
+            <span class="font-bold ${statusKasKomiteClass} px-2 py-0.5 rounded text-[10px]">${statusKasKomiteText}</span>
           </div>
         </div>
       `;

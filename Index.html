@@ -84,7 +84,7 @@
       <div class="bg-gradient-to-br from-emerald-800 to-emerald-900 text-white rounded-2xl p-4 shadow-lg">
         <div class="flex justify-between items-center mb-1">
           <span class="text-xs font-semibold bg-emerald-700/50 px-2.5 py-0.5 rounded-full border border-emerald-600/30">
-            🎨 Saldo Kas Ekskul
+            🎨 Saldo Kas Ekskul (Kolektif)
           </span>
           <span class="text-[10px] text-emerald-200">Rp 50.000/bln</span>
         </div>
@@ -93,7 +93,7 @@
         </div>
         <div class="grid grid-cols-2 gap-2 bg-black/20 rounded-xl p-2.5 backdrop-blur-sm text-[11px]">
           <div>
-            <span class="text-emerald-200 block">Masuk</span>
+            <span class="text-emerald-200 block">Masuk Korlas</span>
             <span class="font-semibold text-emerald-300" id="masuk-kas-ekskul">Rp 0</span>
           </div>
           <div>
@@ -201,7 +201,7 @@
           <span>🔒</span> Privasi Terjaga
         </div>
         <p class="text-xs text-gray-500 leading-relaxed">
-          Gunakan menu <span class="font-bold text-emerald-900">Cek Saya</span> dengan Kode Unik ananda Anda untuk melihat status pembayaran pribadi.
+          Dapat disetor secara kolektif melalui Korlas maupun langsung ke Bu Guru.
         </p>
       </div>
     </div>
@@ -270,12 +270,21 @@
           
           <div>
             <label class="block text-[10px] text-gray-500 mb-1">Jenis Kas</label>
-            <select id="admin-jenis-iuran" class="w-full border rounded-xl p-2 text-xs outline-none bg-gray-50">
+            <select id="admin-jenis-iuran" onchange="toggleMetodeEkskul()" class="w-full border rounded-xl p-2 text-xs outline-none bg-gray-50">
               <option value="kas-kelas">💰 Kas Kelas (Rp 10.000)</option>
               <option value="kas-komite">🏫 Kas Komite (Rp 20.000)</option>
               <option value="kas-ekskul">🎨 Kas Ekskul (Rp 50.000)</option>
               <option value="keduanya">💰+🏫 Kelas + Komite (Rp 30.000)</option>
               <option value="semua">💰+🏫+🎨 Ketiganya Sekaligus (Rp 80.000)</option>
+            </select>
+          </div>
+
+          <!-- Pilihan Penyetoran Kas Ekskul -->
+          <div id="box-metode-ekskul" class="hidden bg-emerald-50 p-2.5 rounded-xl border border-emerald-100">
+            <label class="block text-[10px] font-semibold text-emerald-900 mb-1">Penyetoran Kas Ekskul Ke:</label>
+            <select id="admin-metode-ekskul" class="w-full border rounded-lg p-1.5 text-xs outline-none bg-white text-emerald-950 font-medium">
+              <option value="kolektif">👥 Titip Kolektif ke Korlas</option>
+              <option value="guru">👩‍🏫 Langsung Bayar ke Bu Guru</option>
             </select>
           </div>
 
@@ -306,7 +315,7 @@
           </button>
         </div>
 
-        <!-- Section 2: Ringkasan Status Pembayaran Per Murid (A-Z) -->
+        <!-- Section 2: Rekap Pembayaran & Fitur Hapus / Koreksi -->
         <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm space-y-3">
           <div class="flex items-center justify-between border-b pb-2">
             <h3 class="font-bold text-xs text-amber-900 flex items-center gap-1">
@@ -380,6 +389,19 @@
     </div>
   </nav>
 
+  <!-- Modal Koreksi / Hapus Bayar -->
+  <div id="modal-koreksi" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white w-full max-w-sm rounded-2xl p-4 space-y-3 shadow-xl">
+      <div class="flex justify-between items-center border-b pb-2">
+        <h4 class="font-bold text-xs text-amber-900" id="modal-nama-anak">Koreksi Pembayaran</h4>
+        <button onclick="tutupModalKoreksi()" class="text-gray-400 font-bold text-sm">✕</button>
+      </div>
+      <p class="text-[11px] text-gray-500">Pilih baris transaksi yang ingin **dibatalkan/dihapus**:</p>
+      <div id="modal-daftar-pembayaran" class="space-y-1.5 max-h-60 overflow-y-auto"></div>
+      <button onclick="tutupModalKoreksi()" class="w-full bg-gray-100 text-gray-600 font-semibold py-2 rounded-xl text-xs">Tutup</button>
+    </div>
+  </div>
+
   <script>
     // --- KONFIGURASI SUPABASE ---
     const SUPABASE_URL = 'https://fbfkshoodkuygzllsevx.supabase.co';
@@ -392,7 +414,6 @@
 
     const DAFTAR_BULAN = ['Agustus', 'September', 'Oktober', 'November', 'Desember', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni'];
 
-    // Muat data dari Supabase
     async function initData() {
       await fetchSiswa();
       await fetchPembayaran();
@@ -408,10 +429,7 @@
 
     async function fetchSiswa() {
       const { data, error } = await supabaseClient.from('students').select('*').order('name', { ascending: true });
-      if (error) {
-        console.error('Gagal mengambil data siswa:', error);
-        return;
-      }
+      if (error) return;
       daftarSiswa = data || [];
       document.getElementById('total-murid-count').innerText = `${daftarSiswa.length} Anak`;
       renderRekapMuridAdmin();
@@ -419,11 +437,7 @@
 
     async function fetchPembayaran() {
       const { data, error } = await supabaseClient.from('pembayaran').select('*');
-      if (error) {
-        console.error('Gagal mengambil data pembayaran:', error);
-        return;
-      }
-      
+      if (error) return;
       rawPembayaran = data || [];
       updateTampilanSaldo();
       renderRekapMuridAdmin();
@@ -431,19 +445,27 @@
 
     async function fetchPengeluaran() {
       const { data, error } = await supabaseClient.from('pengeluaran').select('*').order('created_at', { ascending: false });
-      if (error) {
-        console.error('Gagal mengambil data pengeluaran:', error);
-        return;
-      }
-
+      if (error) return;
       daftarPengeluaran = data || [];
       updateTampilanSaldo();
+    }
+
+    function toggleMetodeEkskul() {
+      const val = document.getElementById('admin-jenis-iuran').value;
+      const box = document.getElementById('box-metode-ekskul');
+      if (val === 'kas-ekskul' || val === 'semua') {
+        box.classList.remove('hidden');
+      } else {
+        box.classList.add('hidden');
+      }
     }
 
     function updateTampilanSaldo() {
       let totalMasukKasKelas = rawPembayaran.filter(d => d.jenis === 'kas-kelas').length * 10000;
       let totalMasukKasKomite = rawPembayaran.filter(d => d.jenis === 'kas-komite').length * 20000;
-      let totalMasukKasEkskul = rawPembayaran.filter(d => d.jenis === 'kas-ekskul').length * 50000;
+      
+      // Kas Ekskul yang masuk ke Korlas saja (kolektif)
+      let totalMasukKasEkskul = rawPembayaran.filter(d => d.jenis === 'kas-ekskul' && (d.metode_bayar !== 'guru')).length * 50000;
 
       let totalKeluarKasKelas = 0;
       let totalKeluarKasKomite = 0;
@@ -514,10 +536,15 @@
         const userPembayaran = rawPembayaran.filter(d => d.kode_unik.toUpperCase() === kode);
 
         const getBulanTerakhir = (jenis) => {
-          const lunasBulan = DAFTAR_BULAN.filter(bln => 
-            userPembayaran.some(d => d.jenis === jenis && (d.bulan || 'Agustus') === bln)
-          );
-          return lunasBulan.length > 0 ? lunasBulan[lunasBulan.length - 1] : null;
+          const item = userPembayaran.filter(d => d.jenis === jenis);
+          if (item.length === 0) return null;
+          
+          const lastItem = item[item.length - 1];
+          const bulanStr = lastItem.bulan || 'Agustus';
+          if (jenis === 'kas-ekskul' && lastItem.metode_bayar === 'guru') {
+            return `${bulanStr} (Bu Guru)`;
+          }
+          return bulanStr;
         };
 
         const lastKas = getBulanTerakhir('kas-kelas');
@@ -531,9 +558,14 @@
                 <div class="text-xs font-bold text-gray-800">${s.name}</div>
                 <div class="text-[10px] text-gray-400">Kode: <span class="font-mono text-amber-900 font-semibold">${kode}</span></div>
               </div>
-              <button onclick="pilihKodeMurid('${kode}')" class="bg-amber-800 hover:bg-amber-900 text-white text-[10px] px-2.5 py-1 rounded-lg font-semibold transition">
-                + Input Bayar
-              </button>
+              <div class="flex gap-1">
+                <button onclick="bukaModalKoreksi('${s.name}', '${kode}')" class="bg-gray-200 hover:bg-rose-100 hover:text-rose-700 text-gray-600 text-[10px] px-2 py-1 rounded-lg font-semibold transition">
+                  ✏️ Edit
+                </button>
+                <button onclick="pilihKodeMurid('${kode}')" class="bg-amber-800 hover:bg-amber-900 text-white text-[10px] px-2.5 py-1 rounded-lg font-semibold transition">
+                  + Input
+                </button>
+              </div>
             </div>
             <div class="grid grid-cols-3 gap-1 text-[9px]">
               <div class="p-1 rounded text-center ${lastKas ? 'bg-amber-100/70 text-amber-900' : 'bg-gray-200/50 text-gray-400'}">
@@ -549,6 +581,52 @@
           </div>
         `;
       }).join('');
+    }
+
+    function bukaModalKoreksi(nama, kode) {
+      document.getElementById('modal-nama-anak').innerText = `Koreksi Data: ${nama}`;
+      const container = document.getElementById('modal-daftar-pembayaran');
+      const userPembayaran = rawPembayaran.filter(d => d.kode_unik.toUpperCase() === kode);
+
+      if(userPembayaran.length === 0) {
+        container.innerHTML = `<p class="text-xs text-gray-400 text-center py-3">Belum ada riwayat pembayaran untuk dihapus.</p>`;
+      } else {
+        container.innerHTML = userPembayaran.map(p => {
+          let labelJenis = p.jenis;
+          if (p.jenis === 'kas-kelas') labelJenis = '💰 Kas Kelas';
+          if (p.jenis === 'kas-komite') labelJenis = '🏫 Kas Komite';
+          if (p.jenis === 'kas-ekskul') labelJenis = `🎨 Kas Ekskul ${p.metode_bayar === 'guru' ? '(Bu Guru)' : '(Kolektif)'}`;
+
+          return `
+            <div class="flex justify-between items-center bg-gray-50 border p-2 rounded-xl text-xs">
+              <div>
+                <span class="font-bold text-gray-800">${p.bulan || 'Agustus'}</span> - <span class="text-gray-600">${labelJenis}</span>
+              </div>
+              <button onclick="hapusPembayaranAdmin(${p.id})" class="bg-rose-600 hover:bg-rose-700 text-white text-[10px] px-2 py-0.5 rounded-md font-semibold">
+                Hapus
+              </button>
+            </div>
+          `;
+        }).join('');
+      }
+
+      document.getElementById('modal-koreksi').classList.remove('hidden');
+    }
+
+    function tutupModalKoreksi() {
+      document.getElementById('modal-koreksi').classList.add('hidden');
+    }
+
+    async function hapusPembayaranAdmin(id) {
+      if(!confirm('Apakah Anda yakin ingin menghapus/membatalkan catatan pembayaran ini?')) return;
+
+      const { error } = await supabaseClient.from('pembayaran').delete().eq('id', id);
+      if(error) {
+        alert('Gagal menghapus pembayaran: ' + error.message);
+      } else {
+        alert('Transaksi berhasil dihapus!');
+        tutupModalKoreksi();
+      }
     }
 
     function pilihKodeMurid(kode) {
@@ -586,6 +664,7 @@
       const jenis = document.getElementById('admin-jenis-iuran').value;
       const bulan = document.getElementById('admin-bulan-iuran').value;
       const kode = document.getElementById('admin-kode-unik').value.trim().toUpperCase();
+      const metodeEkskul = document.getElementById('admin-metode-ekskul').value;
       
       if(!kode) {
         alert('Mohon isi Kode Unik terlebih dahulu');
@@ -595,14 +674,16 @@
       let payload = [];
 
       if(jenis === 'keduanya') {
-        payload.push({ jenis: 'kas-kelas', kode_unik: kode, bulan: bulan });
-        payload.push({ jenis: 'kas-komite', kode_unik: kode, bulan: bulan });
+        payload.push({ jenis: 'kas-kelas', kode_unik: kode, bulan: bulan, metode_bayar: 'kolektif' });
+        payload.push({ jenis: 'kas-komite', kode_unik: kode, bulan: bulan, metode_bayar: 'kolektif' });
       } else if(jenis === 'semua') {
-        payload.push({ jenis: 'kas-kelas', kode_unik: kode, bulan: bulan });
-        payload.push({ jenis: 'kas-komite', kode_unik: kode, bulan: bulan });
-        payload.push({ jenis: 'kas-ekskul', kode_unik: kode, bulan: bulan });
+        payload.push({ jenis: 'kas-kelas', kode_unik: kode, bulan: bulan, metode_bayar: 'kolektif' });
+        payload.push({ jenis: 'kas-komite', kode_unik: kode, bulan: bulan, metode_bayar: 'kolektif' });
+        payload.push({ jenis: 'kas-ekskul', kode_unik: kode, bulan: bulan, metode_bayar: metodeEkskul });
+      } else if(jenis === 'kas-ekskul') {
+        payload.push({ jenis: 'kas-ekskul', kode_unik: kode, bulan: bulan, metode_bayar: metodeEkskul });
       } else {
-        payload.push({ jenis: jenis, kode_unik: kode, bulan: bulan });
+        payload.push({ jenis: jenis, kode_unik: kode, bulan: bulan, metode_bayar: 'kolektif' });
       }
 
       const { error } = await supabaseClient.from('pembayaran').insert(payload);
@@ -610,7 +691,7 @@
       if (error) {
         alert('Gagal menyimpan pembayaran: ' + error.message);
       } else {
-        alert(`Berhasil! Kode ${kode} ditandai LUNAS untuk bulan ${bulan}`);
+        alert(`Berhasil! Kode ${kode} ditandai LUNAS bulan ${bulan}`);
         document.getElementById('admin-kode-unik').value = '';
       }
     }
@@ -680,7 +761,15 @@
       let HTMLRincian = DAFTAR_BULAN.map(bln => {
         const kasKelasLunas = userPembayaran.some(d => d.jenis === 'kas-kelas' && (d.bulan || 'Agustus') === bln);
         const kasKomiteLunas = userPembayaran.some(d => d.jenis === 'kas-komite' && (d.bulan || 'Agustus') === bln);
-        const kasEkskulLunas = userPembayaran.some(d => d.jenis === 'kas-ekskul' && (d.bulan || 'Agustus') === bln);
+        
+        const ekskulData = userPembayaran.find(d => d.jenis === 'kas-ekskul' && (d.bulan || 'Agustus') === bln);
+
+        let statusEkskulText = 'BELUM';
+        let isEkskulLunas = false;
+        if (ekskulData) {
+          isEkskulLunas = true;
+          statusEkskulText = ekskulData.metode_bayar === 'guru' ? 'LUNAS (Bu Guru)' : 'LUNAS';
+        }
 
         return `
           <div class="bg-gray-50 border border-gray-100 rounded-xl p-2.5 space-y-1.5">
@@ -694,9 +783,9 @@
                 <span>🏫 Komite</span>
                 <span class="font-bold">${kasKomiteLunas ? 'LUNAS' : 'BELUM'}</span>
               </div>
-              <div class="p-1 rounded-lg flex flex-col items-center justify-center ${kasEkskulLunas ? 'bg-emerald-100 text-emerald-900 font-semibold' : 'bg-gray-200/60 text-gray-500'}">
+              <div class="p-1 rounded-lg flex flex-col items-center justify-center ${isEkskulLunas ? 'bg-emerald-100 text-emerald-900 font-semibold' : 'bg-gray-200/60 text-gray-500'}">
                 <span>🎨 Ekskul</span>
-                <span class="font-bold">${kasEkskulLunas ? 'LUNAS' : 'BELUM'}</span>
+                <span class="font-bold text-[8px] text-center">${statusEkskulText}</span>
               </div>
             </div>
           </div>
@@ -717,7 +806,6 @@
       `;
     }
 
-    // Jalankan aplikasi
     initData();
   </script>
 </body>
